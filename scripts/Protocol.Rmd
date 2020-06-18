@@ -12,7 +12,15 @@ output:
 
 ```{r setup, include=FALSE,results="asis"}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
-knitr::opts_knit$set(root.dir = '/data5/bsi/epibreast/m087494.couch/Couch/Huge_Breast_VCF/BRCA1_BRCA2_VUS/SubProjects/Tanya_results_5-9-2017')
+
+wd = "/mnt/HDD/share/NVM"
+options(width = 1800)
+knitr::opts_chunk$set(fig.width=12, fig.height=8, echo=TRUE, warning=FALSE, message=FALSE)
+knitr::opts_knit$set(root.dir = wd)
+setwd(wd)
+
+
+
 
 cat("
 <style type=\"text/css\">
@@ -33,6 +41,7 @@ library("ROCR")
 library('e1071')
 library('ggplot2')
 library('gridExtra')
+library(dplyr)
 ```
 
 Read in the data sets and create subsets
@@ -1598,10 +1607,29 @@ brca1$sum_nn_24= with(brca1, vest3rank_nn+agvgd_nn+perch_nn+sift_nn+metasvmrank_
 Calculate MCC at optimal cutpoint for each possible number of votes in NVM
 ```{r vote_model, results='asis'}
 
-brca2.votes.train <- subset(brca2,set_=='train')
-brca1.votes.train <- subset(brca1,set_=='train')
-brca2.votes.test <- subset(brca2,set_=='test')
-brca1.votes.test <- subset(brca1,set_=='test')
+#set.seed(12345)
+
+#nr <- nrow(brca2)
+#row2.train <- sample(nr, floor(0.5 * nr))
+#brca2.votes.train <- brca2[row2.train,]
+#brca2.votes.test <- brca2[-row2.train,]
+
+
+#nr <- nrow(brca1)
+#row1.train <- sample(nr, floor(0.5 * nr))
+#brca1.votes.train <- brca1[row1.train,]
+#brca1.votes.test <- brca1[-row1.train,]
+
+#brca2.votes.train <- subset(brca2,set_=='train')
+#brca1.votes.train <- subset(brca1,set_=='train')
+#brca2.votes.test <- subset(brca2,set_=='test')
+#brca1.votes.test <- subset(brca1,set_=='test')
+
+brca2.votes.train <- subset(brca2,set_=='test')
+brca1.votes.train <- subset(brca1,set_=='test')
+brca2.votes.test <- subset(brca2,set_=='train')
+brca1.votes.test <- subset(brca1,set_=='train')
+
 
 # BRCA2 - Deleterious vs Intermediate/Neutral (Scenario 1)
 fn <- matrix(nrow=22,ncol=1)
@@ -1881,20 +1909,23 @@ v2a.41 <- optimal.cutpoints(X="rf_prob_del",status="hdr_del",
 					                  ci.fit=TRUE,data=vus.brca2..)
 
 
-v2a.42 <- optimal.cutpoints(X="sum_del_6",status="hdr_del",
+v2a.42 <- optimal.cutpoints(X="sum_del_4",status="hdr_del",
                             tag.healthy=0,methods=c("SpEqualSe"),
 					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
 					                  ci.fit=TRUE,data=brca2.votes.train)
 
-v2a.43 <- optimal.cutpoints(X="sum_del_6",status="hdr_del",
-                            tag.healthy=0,methods=c("SpEqualSe"),
-					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"), 
-					                  ci.fit=TRUE,data=brca2.votes.test)
+v2a.43 <- v2a.42
+v2a.44 <- v2a.42
+  
+#v2a.43 <- optimal.cutpoints(X="sum_del_6",status="hdr_del",
+#                            tag.healthy=0,methods=c("SpEqualSe"),
+#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"), 
+#					                  ci.fit=TRUE,data=brca2.votes.test)
 
-v2a.44 <- optimal.cutpoints(X="sum_del_6",status="hdr_del",
-                            tag.healthy=0,methods=c("SpEqualSe"),
-					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"), 
-					                  ci.fit=TRUE,data=brca2)
+#v2a.44 <- optimal.cutpoints(X="sum_del_6",status="hdr_del",
+#                            tag.healthy=0,methods=c("SpEqualSe"),
+#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"), 
+#					                  ci.fit=TRUE,data=brca2)
 
 
 # Extract performance statistics for new models
@@ -1953,20 +1984,24 @@ v2b.41 <- optimal.cutpoints(X="rf_prob_delint",status="hdr_not_neutral",
 					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),                           
 					                  ci.fit=TRUE,data=vus.brca2..)
 
-v2b.42 <- optimal.cutpoints(X="sum_nn_7",status="hdr_not_neutral",
+v2b.42 <- optimal.cutpoints(X="sum_nn_3",status="hdr_not_neutral",
                             tag.healthy=0,methods=c("SpEqualSe"),
 					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
 					                  ci.fit=TRUE,data=brca2.votes.train)
 
-v2b.43 <- optimal.cutpoints(X="sum_nn_7",status="hdr_not_neutral",
-                            tag.healthy=0,methods=c("SpEqualSe"),
-					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
-					                  ci.fit=TRUE,data=brca2.votes.test)
+v2b.43 <- v2b.42
+v2b.44 <- v2b.42
 
-v2b.44 <- optimal.cutpoints(X="sum_nn_7",status="hdr_not_neutral",
-                            tag.healthy=0,methods=c("SpEqualSe"),
-					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
-					                  ci.fit=TRUE,data=brca2)
+
+#v2b.43 <- optimal.cutpoints(X="sum_nn_7",status="hdr_not_neutral",
+#                            tag.healthy=0,methods=c("SpEqualSe"),
+#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
+#					                  ci.fit=TRUE,data=brca2.votes.test)
+
+#v2b.44 <- optimal.cutpoints(X="sum_nn_7",status="hdr_not_neutral",
+#                            tag.healthy=0,methods=c("SpEqualSe"),
+#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
+#					                  ci.fit=TRUE,data=brca2)
 
 
 # Extract performance statistics for new models
@@ -2024,19 +2059,22 @@ v1a.41 <- optimal.cutpoints(X="rf_prob_del",status="hdr_del",
 					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
 					                  ci.fit=TRUE,data=vus.brca1..)
 
-v1a.42 <- optimal.cutpoints(X="sum_del_13",status="hdr_del",
+v1a.42 <- optimal.cutpoints(X="sum_del_3",status="hdr_del",
                             tag.healthy=0,methods=c("SpEqualSe"),
 					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
                             ci.fit=TRUE,data=brca1.votes.train)
 
-v1a.43 <- optimal.cutpoints(X="sum_del_13",status="hdr_del",
-                            tag.healthy=0,methods=c("MinValueSp"),
-					                  ci.fit=TRUE,data=brca1.votes.test)
+v1a.43 <- v1a.42
+v1a.44 <- v1a.42
 
-v1a.44 <- optimal.cutpoints(X="sum_del_13",status="hdr_del",
-                            tag.healthy=0,methods=c("MinValueSp"),
-					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull",valueSp=0.89),
-                            ci.fit=TRUE,data=brca1)
+#v1a.43 <- optimal.cutpoints(X="sum_del_13",status="hdr_del",
+#                            tag.healthy=0,methods=c("MinValueSp"),
+#					                  ci.fit=TRUE,data=brca1.votes.test)
+
+#v1a.44 <- optimal.cutpoints(X="sum_del_13",status="hdr_del",
+#                            tag.healthy=0,methods=c("MinValueSp"),
+#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull",valueSp=0.89),
+#                            ci.fit=TRUE,data=brca1)
 
 # Extract performance statistics for new models
 
@@ -2382,7 +2420,7 @@ ST4 <- rbind(brca2a.new.models,brca2b.new.models,brca1a.new.models,brca1b.new.mo
 
 ```{r}
 knitr::kable(ST4)
-#write.csv(tableS4,file='TableS4.csv')
+write.csv(ST4,file='TableS4.csv')
 ```
 
 Output dataset with predictions for variants with functional data
@@ -2414,8 +2452,8 @@ brca1.$rf_pred_delint <- ifelse(brca1.$rf_prob_delint>=0.378,1,0)
 brca1.$nvm_pred_del <- ifelse(brca1.$sum_del_13>=9,1,0)
 brca1.$nvm_pred_delint <- ifelse(brca1.$sum_nn_9>=6,1,0)
 
-#write.csv(brca2.,file="brca2_with_function.csv")
-#write.csv(brca1.,file="brca1_with_function.csv")
+write.csv(brca2.,file="brca2_with_function.csv")
+write.csv(brca1.,file="brca1_with_function.csv")
 
 ```
 
@@ -2456,7 +2494,7 @@ all2..$nvm_pred_delint <- ifelse(all2..$sum_nn_7>=5,1,0)
 all2..$rf_pred_del <- ifelse(all2..$rf_prob_del>=0.371,1,0)
 all2..$rf_pred_delint <- ifelse(all2..$rf_prob_delint>=0.437,1,0)
 
-#write.csv(all2..,file='all_vus_brca2.csv')
+write.csv(all2..,file='all_vus_brca2.csv')
 
 all1..$perch_del <- ifelse(all1..$PERCH_noMAF>=0.206316,1,0)
 all1..$metasvmrank_del <- ifelse(all1..$MetasvmRankscore>=0.9083,1,0)
