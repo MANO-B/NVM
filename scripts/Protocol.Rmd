@@ -1917,15 +1917,15 @@ v2a.42 <- optimal.cutpoints(X="sum_del_4",status="hdr_del",
 v2a.43 <- v2a.42
 v2a.44 <- v2a.42
   
-#v2a.43 <- optimal.cutpoints(X="sum_del_6",status="hdr_del",
-#                            tag.healthy=0,methods=c("SpEqualSe"),
-#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"), 
-#					                  ci.fit=TRUE,data=brca2.votes.test)
+v2a.43 <- optimal.cutpoints(X="sum_del_6",status="hdr_del",
+                            tag.healthy=0,methods=c("SpEqualSe"),
+					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"), 
+					                  ci.fit=TRUE,data=brca2.votes.test)
 
-#v2a.44 <- optimal.cutpoints(X="sum_del_6",status="hdr_del",
-#                            tag.healthy=0,methods=c("SpEqualSe"),
-#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"), 
-#					                  ci.fit=TRUE,data=brca2)
+v2a.44 <- optimal.cutpoints(X="sum_del_6",status="hdr_del",
+                            tag.healthy=0,methods=c("SpEqualSe"),
+					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"), 
+					                  ci.fit=TRUE,data=brca2)
 
 
 # Extract performance statistics for new models
@@ -1993,15 +1993,15 @@ v2b.43 <- v2b.42
 v2b.44 <- v2b.42
 
 
-#v2b.43 <- optimal.cutpoints(X="sum_nn_7",status="hdr_not_neutral",
-#                            tag.healthy=0,methods=c("SpEqualSe"),
-#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
-#					                  ci.fit=TRUE,data=brca2.votes.test)
+v2b.43 <- optimal.cutpoints(X="sum_nn_7",status="hdr_not_neutral",
+                            tag.healthy=0,methods=c("SpEqualSe"),
+					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
+					                  ci.fit=TRUE,data=brca2.votes.test)
 
-#v2b.44 <- optimal.cutpoints(X="sum_nn_7",status="hdr_not_neutral",
-#                            tag.healthy=0,methods=c("SpEqualSe"),
-#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
-#					                  ci.fit=TRUE,data=brca2)
+v2b.44 <- optimal.cutpoints(X="sum_nn_7",status="hdr_not_neutral",
+                            tag.healthy=0,methods=c("SpEqualSe"),
+					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
+					                  ci.fit=TRUE,data=brca2)
 
 
 # Extract performance statistics for new models
@@ -2067,14 +2067,14 @@ v1a.42 <- optimal.cutpoints(X="sum_del_3",status="hdr_del",
 v1a.43 <- v1a.42
 v1a.44 <- v1a.42
 
-#v1a.43 <- optimal.cutpoints(X="sum_del_13",status="hdr_del",
-#                            tag.healthy=0,methods=c("MinValueSp"),
-#					                  ci.fit=TRUE,data=brca1.votes.test)
+v1a.43 <- optimal.cutpoints(X="sum_del_13",status="hdr_del",
+                            tag.healthy=0,methods=c("MinValueSp"),
+					                  ci.fit=TRUE,data=brca1.votes.test)
 
-#v1a.44 <- optimal.cutpoints(X="sum_del_13",status="hdr_del",
-#                            tag.healthy=0,methods=c("MinValueSp"),
-#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull",valueSp=0.89),
-#                            ci.fit=TRUE,data=brca1)
+v1a.44 <- optimal.cutpoints(X="sum_del_13",status="hdr_del",
+                            tag.healthy=0,methods=c("MinValueSp"),
+					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull",valueSp=0.89),
+                            ci.fit=TRUE,data=brca1)
 
 # Extract performance statistics for new models
 
