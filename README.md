@@ -1,6 +1,9 @@
 # Caution
 This repository is originally made by Hart, S.N. and modified by Ikegami, M.
-Simply, we reproduced the results with the original "training set" as a test set, and vice versa.
+Simply, we tried to reproduce Figure S3 with
+(1) the original "test set" as a training set.
+(2) the original "test set" + "training set" as a training set.
+We cannot reproduce the result in the original paper.
 
 # NVM
 This repository contains all the code and data to regenerate results from our Genetics In Medicine Paper: "Comprehensive annotation of BRCA1 and BRCA2 missense variants by functionally validated sequence-based computational prediction models"
