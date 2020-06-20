@@ -1625,11 +1625,15 @@ Calculate MCC at optimal cutpoint for each possible number of votes in NVM
 #brca2.votes.test <- subset(brca2,set_=='test')
 #brca1.votes.test <- subset(brca1,set_=='test')
 
-brca2.votes.train <- subset(brca2,set_=='test')
-brca1.votes.train <- subset(brca1,set_=='test')
-brca2.votes.test <- subset(brca2,set_=='train')
-brca1.votes.test <- subset(brca1,set_=='train')
+#brca2.votes.train <- subset(brca2,set_=='test')
+#brca1.votes.train <- subset(brca1,set_=='test')
+#brca2.votes.test <- subset(brca2,set_=='train')
+#brca1.votes.test <- subset(brca1,set_=='train')
 
+brca2.votes.train <- brca2
+brca1.votes.train <- brca1
+brca2.votes.test <- brca2
+brca1.votes.test <- brca1
 
 # BRCA2 - Deleterious vs Intermediate/Neutral (Scenario 1)
 fn <- matrix(nrow=22,ncol=1)
@@ -1705,7 +1709,7 @@ nd[i,1] <- v1a.sum.i$SpEqualSe[[1]]$measures.acc$n$d
 tp[i,1] <- nd[i,] - fn[i,]
 tn[i,1] <- nh[i,] - fp[i,]
 
-cutoff[i,1] <- v1a.sum.i$SpEqualSe[[1]]$optimal.cutoff$cutoff
+cutoff[i,1] <- v1a.sum.i$SpEqualSe[[1]]$optimal.cutoff$cutoff[[1]]
 
 mcc[i,1] <- (tp[i,]*tn[i,]-fp[i,]*fn[i,])/sqrt((tp[i,]+fp[i,])*
                                                  (tp[i,]+fn[i,])*(tn[i,]+fp[i,])*(tn[i,]+fn[i,]))
@@ -1909,14 +1913,11 @@ v2a.41 <- optimal.cutpoints(X="rf_prob_del",status="hdr_del",
 					                  ci.fit=TRUE,data=vus.brca2..)
 
 
-v2a.42 <- optimal.cutpoints(X="sum_del_4",status="hdr_del",
+v2a.42 <- optimal.cutpoints(X="sum_del_6",status="hdr_del",
                             tag.healthy=0,methods=c("SpEqualSe"),
 					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
 					                  ci.fit=TRUE,data=brca2.votes.train)
 
-v2a.43 <- v2a.42
-v2a.44 <- v2a.42
-  
 v2a.43 <- optimal.cutpoints(X="sum_del_6",status="hdr_del",
                             tag.healthy=0,methods=c("SpEqualSe"),
 					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"), 
@@ -1984,14 +1985,10 @@ v2b.41 <- optimal.cutpoints(X="rf_prob_delint",status="hdr_not_neutral",
 					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),                           
 					                  ci.fit=TRUE,data=vus.brca2..)
 
-v2b.42 <- optimal.cutpoints(X="sum_nn_3",status="hdr_not_neutral",
+v2b.42 <- optimal.cutpoints(X="sum_nn_7",status="hdr_not_neutral",
                             tag.healthy=0,methods=c("SpEqualSe"),
 					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
 					                  ci.fit=TRUE,data=brca2.votes.train)
-
-v2b.43 <- v2b.42
-v2b.44 <- v2b.42
-
 
 v2b.43 <- optimal.cutpoints(X="sum_nn_7",status="hdr_not_neutral",
                             tag.healthy=0,methods=c("SpEqualSe"),
@@ -2059,21 +2056,23 @@ v1a.41 <- optimal.cutpoints(X="rf_prob_del",status="hdr_del",
 					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
 					                  ci.fit=TRUE,data=vus.brca1..)
 
-v1a.42 <- optimal.cutpoints(X="sum_del_3",status="hdr_del",
+v1a.42 <- optimal.cutpoints(X="sum_del_13",status="hdr_del",
                             tag.healthy=0,methods=c("SpEqualSe"),
 					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
                             ci.fit=TRUE,data=brca1.votes.train)
 
-v1a.43 <- v1a.42
-v1a.44 <- v1a.42
 
 v1a.43 <- optimal.cutpoints(X="sum_del_13",status="hdr_del",
-                            tag.healthy=0,methods=c("MinValueSp"),
+#                            tag.healthy=0,methods=c("MinValueSp"),
+                            tag.healthy=0,methods=c("SpEqualSe"),
+					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
 					                  ci.fit=TRUE,data=brca1.votes.test)
 
 v1a.44 <- optimal.cutpoints(X="sum_del_13",status="hdr_del",
-                            tag.healthy=0,methods=c("MinValueSp"),
-					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull",valueSp=0.89),
+#                            tag.healthy=0,methods=c("MinValueSp"),
+#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull",valueSp=0.89),
+                            tag.healthy=0,methods=c("SpEqualSe"),
+					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
                             ci.fit=TRUE,data=brca1)
 
 # Extract performance statistics for new models
@@ -2115,7 +2114,7 @@ brca1a.new.models.1 <- data.frame(cutoff,sens,spec,auc,fn,fp,tp,tn,mcc,
 
 }
 
-for (i in 2:2) {
+for (i in 2:4) {
 
 auc[i,] <- list.new[[i]]$SpEqualSe[[1]]$measures.acc$AUC
 sens[i,] <- list.new[[i]]$SpEqualSe[[1]]$optimal.cutoff$Se[c(1:3)]
@@ -2137,6 +2136,7 @@ brca1a.new.models.2 <- data.frame(cutoff,sens,spec,auc,fn,fp,tp,tn,mcc,
 
 }
 
+if(1==2){
 for (i in 3:4) {
 
 auc[i,] <- list.new[[i]]$MinValueSp[[1]]$measures.acc$AUC
@@ -2157,7 +2157,7 @@ mcc[i,1] <- (tp[i,]*tn[i,]-fp[i,]*fn[i,])/sqrt((tp[i,]+fp[i,])*
 brca1a.new.models.3 <- data.frame(cutoff,sens,spec,auc,fn,fp,tp,tn,mcc,
                                 stringsAsFactors = FALSE)
 }
-
+}
 
 brca1a.new.models <- cbind(modelnames2[41:44],brca1a.new.models.3)
 colnames(brca1a.new.models) <- c("model","cutpoint","sens","sens.lcl","sens.ucl","spec",
@@ -2184,13 +2184,17 @@ v1b.42 <- optimal.cutpoints(X="sum_nn_9",status="hdr_not_neutral",
 					                  ci.fit=TRUE,data=brca1.votes.train)
 
 v1b.43 <- optimal.cutpoints(X="sum_nn_9",status="hdr_not_neutral",
-                            tag.healthy=0,methods=c("MinValueSp"),
-					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull",valueSp=0.9),
+#                            tag.healthy=0,methods=c("MinValueSp"),
+#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull",valueSp=0.9),
+                            tag.healthy=0,methods=c("SpEqualSe"),
+					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
 					                  ci.fit=TRUE,data=brca1.votes.test)
 
 v1b.44 <- optimal.cutpoints(X="sum_nn_9",status="hdr_not_neutral",
-                            tag.healthy=0,methods=c("MinValueSp"),
-					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull",valueSp=0.85),
+#                            tag.healthy=0,methods=c("MinValueSp"),
+#					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull",valueSp=0.85),
+                            tag.healthy=0,methods=c("SpEqualSe"),
+					                  control = control.cutpoints(ci.SeSp = "AgrestiCoull"),
 					                  ci.fit=TRUE,data=brca1)
 
 list.new <- list(v1b.41, v1b.42, v1b.43, v1b.44)
@@ -2208,7 +2212,7 @@ auc <- matrix(NA,nrow=4,ncol=3)
 sens <- matrix(NA,nrow=4,ncol=3)
 spec <- matrix(NA,nrow=4,ncol=3)
 
-for (i in 1:2) {
+for (i in 1:4) {
 
 auc[i,] <- list.new[[i]]$SpEqualSe[[1]]$measures.acc$AUC
 sens[i,] <- list.new[[i]]$SpEqualSe[[1]]$optimal.cutoff$Se[c(1:3)]
@@ -2229,7 +2233,7 @@ brca1a.new.models.1 <- data.frame(cutoff,sens,spec,auc,fn,fp,tp,tn,mcc,
                                 stringsAsFactors = FALSE)
 }
 
-
+if(1==2){
 for (i in 3:4) {
 
 auc[i,] <- list.new[[i]]$MinValueSp[[1]]$measures.acc$AUC
@@ -2250,7 +2254,7 @@ mcc[i,1] <- (tp[i,]*tn[i,]-fp[i,]*fn[i,])/sqrt((tp[i,]+fp[i,])*
 brca1b.new.models.2 <- data.frame(cutoff,sens,spec,auc,fn,fp,tp,tn,mcc,
                                 stringsAsFactors = FALSE)
 }
-
+}
 
 brca1b.new.models <- cbind(modelnames2[41:44],brca1b.new.models.2)
 colnames(brca1b.new.models) <- c("model","cutpoint","sens","sens.lcl","sens.ucl","spec",
@@ -2292,13 +2296,18 @@ knitr::kable(TABLE_2,row.names = F)
 write.table(TABLE_2,file="tables/Table_2.tsv",row.names = F,col.names = T,sep="\t")
 ```
 
+
+
+brca2.votes.train <- subset(brca2,set_=='test')
+brca1.votes.train
+
 # Figure S3
 ### Receiver operating characteristic (ROC) curves for the NVM model applied to the entire data set using rules for BRCA1 and BRCA2 genes. 
 Assemble stats for NVM
 ```{r}
 
 # Numbers for NVM ROC figure
-roc2a.nvm <- prediction(brca2$sum_del_6,brca2$hdr_del)
+roc2a.nvm <- prediction(brca2.votes.train$sum_del_6,brca2.votes.train$hdr_del)
 perf2a.nvm <- performance(roc2a.nvm,"tpr","fpr")
 x_val <- unlist(perf2a.nvm@x.values)
 y_val <- unlist(perf2a.nvm@y.values)
@@ -2306,7 +2315,7 @@ gene  <- rep("BRCA2",length(x_val))
 Scenario  <- rep("Scenario 1",length(x_val))
 tmp<- data.frame(FPR=x_val,TPR=y_val,Gene=gene,Scenario)
 
-roc2b.nvm <- prediction(brca2$sum_nn_7,brca2$hdr_not_neutral)
+roc2b.nvm <- prediction(brca2.votes.train$sum_nn_7,brca2.votes.train$hdr_not_neutral)
 perf2b.nvm <- performance(roc2b.nvm,"tpr","fpr")
 x_val <- unlist(perf2b.nvm@x.values)
 y_val <- unlist(perf2b.nvm@y.values)
@@ -2314,7 +2323,7 @@ gene  <- rep("BRCA2",length(x_val))
 Scenario  <- rep("Scenario 2",length(x_val))
 tmp<- rbind(tmp,data.frame(FPR=x_val,TPR=y_val,Gene=gene,Scenario))
 
-roc1a.nvm <- prediction(brca1$sum_del_13,brca1$hdr_del)
+roc1a.nvm <- prediction(brca1.votes.train$sum_del_13,brca1.votes.train$hdr_del)
 perf1a.nvm <- performance(roc1a.nvm,"tpr","fpr")
 x_val <- unlist(perf1a.nvm@x.values)
 y_val <- unlist(perf1a.nvm@y.values)
@@ -2322,7 +2331,7 @@ gene  <- rep("BRCA1",length(x_val))
 Scenario  <- rep("Scenario 1",length(x_val))
 tmp<- rbind(tmp,data.frame(FPR=x_val,TPR=y_val,Gene=gene,Scenario))
 
-roc1b.nvm <- prediction(brca1$sum_nn_9,brca1$hdr_not_neutral)
+roc1b.nvm <- prediction(brca1.votes.train$sum_nn_9,brca1.votes.train$hdr_not_neutral)
 perf1b.nvm <- performance(roc1b.nvm,"tpr","fpr")
 x_val <- unlist(perf1b.nvm@x.values)
 y_val <- unlist(perf1b.nvm@y.values)
